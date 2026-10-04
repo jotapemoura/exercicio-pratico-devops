@@ -1,0 +1,15 @@
+Primeiro passo: Criacao da aplicacao web inicial utilizando Node.js com o framework Express. Foi criado o arquivo package.json contendo a versao 1.0 do projeto e o arquivo app.js com um servidor escutando na porta 8080 e configurado para responder a mensagem Hello World no endpoint GET /hello.
+
+Segundo passo: Criacao do arquivo Dockerfile na raiz do projeto. Foram definidas as instrucoes para utilizar a imagem base node:18-alpine, definir o diretorio de trabalho /app, copiar o arquivo package.json, instalar as dependencias de producao, copiar o codigo fonte, expor a porta 8080 e definir o comando de inicializacao node app.js.
+
+Terceiro passo: Validacao local do container. Foi executado o comando docker build -t minha-aplicacao:1.0 . para gerar a imagem localmente. Em seguida, o container foi iniciado com docker run -d -p 8080:8080 --name container-teste minha-aplicacao:1.0. A aplicacao foi testada com curl http://localhost:8080/hello e retornou a resposta Hello World esperada. O container local foi parado e removido para liberar a porta.
+
+Quarto passo: Configuracao do repositorio e credenciais. O projeto foi versionado com Git e publicado no GitHub. No painel do repositorio no GitHub, na secao Settings > Secrets and variables > Actions, foram cadastradas duas Secrets chamadas REGISTRY_USERNAME e REGISTRY_TOKEN com o usuario e token de acesso do Docker Hub, garantindo que as credenciais nao ficassem expostas no codigo.
+
+Quinto passo: Criacao da pipeline de automacao no GitHub Actions. Foi criado o arquivo .github/workflows/docker.yml configurado para ser executado automaticamente a cada push na branch principal. A pipeline faz o checkout do codigo, realiza a autenticacao no Docker Hub usando as Secrets, le a versao informada no package.json, constroi a imagem Docker e publica automaticamente no Container Registry com a tag correspondente e com a tag latest.
+
+Sexto passo: Publicacao e teste da versao 1.0. Os arquivos foram enviados para o GitHub com os comandos git add, git commit e git push origin main, disparando a pipeline. Apos a conclusao da pipeline, a imagem publicada foi baixada com docker pull SEU_USUARIO/minha-aplicacao:1.0 e executada com docker run -d -p 8080:8080 --name app-v1 SEU_USUARIO/minha-aplicacao:1.0. O teste com curl http://localhost:8080/hello confirmou o retorno Hello World diretamente da imagem do registry. O container foi encerrado em seguida.
+
+Setimo passo: Atualizacao para a versao 2.0. O arquivo app.js foi editado para mudar a resposta do endpoint para Hello World 2. O arquivo package.json foi atualizado para a versao 2.0.
+
+Oitavo passo: Publicacao e teste da versao 2.0. As alteracoes foram enviadas ao GitHub via git commit e git push, o que disparou novamente a pipeline do GitHub Actions. A pipeline gerou e publicou a nova imagem com a tag 2.0 no Container Registry. Para validar, a nova imagem foi baixada com docker pull SEU_USUARIO/minha-aplicacao:2.0 e executada com docker run -d -p 8080:8080 --name app-v2 SEU_USUARIO/minha-aplicacao:2.0. O teste com curl http://localhost:8080/hello retornou Hello World 2, confirmando a execucao correta da nova versao.
